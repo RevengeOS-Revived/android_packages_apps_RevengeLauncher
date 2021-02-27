@@ -226,8 +226,16 @@ public class DepthController implements StateHandler<LauncherState>,
         }
 
         if (supportsBlur) {
+            final int blur;
+            final boolean disable = Utilities.disableAllAppsBlur(mLauncher);
+            if (mLauncher.isInState(LauncherState.NORMAL) ||
+                    (mLauncher.isInState(LauncherState.ALL_APPS) && disable)) {
+                blur = 0;
+            } else {
+                blur = (int) (mDepth * mMaxBlurRadius);
+            }
             new TransactionCompat()
-                    .setBackgroundBlurRadius(mSurface, (int) (mDepth * mMaxBlurRadius))
+                    .setBackgroundBlurRadius(mSurface, blur)
                     .apply();
         }
     }
